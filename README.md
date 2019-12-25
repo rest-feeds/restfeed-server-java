@@ -5,12 +5,6 @@ Library to provide a [REST Feed](http://rest-feeds.org/) server endpoint.
 The library provides a plain Java implementation of the server side polling endpoint.
 Plus an optional Spring Boot Auto Configuration to simplify the implementation as a Spring application.
 
-## Requirements
-
-Feed items are stored in a _repository_ in chronological order of addition.
-An SQL database is a good choice, as it provides auto incrementation of primary keys.
-A single partitioned Kafka topic may also be reasonable as repository, but it requires more custom client and offset handling.
-
 ## Getting Started 
 
 Go to [start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.2.2.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.example&artifactId=restfeed-server-example&name=restfeed-server-example&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.restfeed-server-example&dependencies=web,jdbc,h2) and create an new application. Select these dependencies:
@@ -32,7 +26,7 @@ Then add this library to your `pom.xml`:
     </dependency>
 ```
 
-The [`RestFeedServerAutoConfiguration`](blob/master/src/main/java/org/restfeeds/server/spring/RestFeedServerAutoConfiguration.java) adds all relevant beans.
+The [`RestFeedServerAutoConfiguration`](src/main/java/org/restfeeds/server/spring/RestFeedServerAutoConfiguration.java) adds all relevant beans.
 You only need to add a `@RestController` that calls the `RestFeedEndpoint#fetch` method, 
 or use the generic `RestFeedEndpointController` by registering it as a bean.
 
@@ -71,13 +65,13 @@ create index feed_position ON feed(feed, position);
 
 and make sure your database is connected in your `application.properties`:
 
-```
+```properties
 spring.datasource.url=jdbc:h2:mem:testdb
 ```
 
 Finally, make sure that your application adds new feed items by calling the `FeedItemRepository#append` method.
 
-```
+```java
 feedItemRepository.append(
     "myfeed",
     UUID.randomUUID().toString(),
@@ -100,10 +94,17 @@ When providing a server, you need to provide implementations for these component
 
 Default implementation for Spring: org.restfeeds.server.spring.JdbcFeedItemRepository
 
+Feed items are stored in a _repository_ in chronological order of addition.
+An SQL database is a good choice, as it provides auto incrementation of primary keys.
+A single partitioned Kafka topic may also be reasonable as repository, but it requires more custom client and offset handling.
+
 Provide access to the database that stores the feed items.
 
 Consider a good primary key that identifies a feed item and guarantees the chronological sequence of addition to the feed.
 An auto-incrementing database sequence is a good choice.
+
+The RestFeedEndpoint polls the repository every few milliseconds for new items.
+Make sure that the fields used for `feed` (if any) and `position` are indexed.
 
 ### NextLinkBuilder
 
