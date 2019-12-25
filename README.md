@@ -1,9 +1,8 @@
 # restfeed-server-java
 
-Library to provide a [REST Feed](http://rest-feeds.org/) server endpoint.
+Library to provide a [REST Feed](http://rest-feeds.org/) server endpoint in Java.
 
-The library provides a plain Java implementation of the server side polling endpoint.
-Plus an optional Spring Boot Auto Configuration to simplify the implementation as a Spring application.
+An included Spring Boot Auto Configuration simplifies the implementation as a Spring application.
 
 ## Getting Started 
 
@@ -131,4 +130,5 @@ This endpoint (or the framework) must implement content negotiation.
 The library is written in pure Java and has no transitive compile dependencies.
 
 Feel free to implement your endpoint in Java EE, Quarkus, Kotlin, Spring Webflux, etc.
+
 Further examples are highly appreciated.
