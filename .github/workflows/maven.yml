@@ -4,18 +4,18 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: $
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        java_version: [1.8, 9, 10, 11, 12, 13]
+        java: [1.8, 9, 10, 11, 12, 13]
         os: [windows-latest, macOS-latest, ubuntu-latest]
         
     steps:
     - uses: actions/checkout@v1
-    - name: Set up JDK $
+    - name: Set up JDK ${{ matrix.java }}
       uses: actions/setup-java@v1
       with:
-        java-version: $
+        java-version: ${{ matrix.java }}
     - name: Build with Maven
       run: ./mvnw package
