@@ -8,7 +8,7 @@ public class FeedItem {
   private final String id;
   private final String next;
   private final String type;
-  private final String uri;
+  private final String resource;
   private final String method;
   private final String timestamp;
   private final Object data;
@@ -17,14 +17,14 @@ public class FeedItem {
       String id,
       String next,
       String type,
-      String uri,
+      String resource,
       String method,
       String timestamp,
       Object data) {
     this.id = id;
     this.next = next;
     this.type = type;
-    this.uri = uri;
+    this.resource = resource;
     this.method = method;
     this.timestamp = timestamp;
     this.data = data;
@@ -42,8 +42,8 @@ public class FeedItem {
     return type;
   }
 
-  public String getUri() {
-    return uri;
+  public String getResource() {
+    return resource;
   }
 
   public String getMethod() {
@@ -64,7 +64,7 @@ public class FeedItem {
         .add("id='" + id + "'")
         .add("next='" + next + "'")
         .add("type='" + type + "'")
-        .add("uri='" + uri + "'")
+        .add("resource='" + resource + "'")
         .add("method='" + method + "'")
         .add("timestamp='" + timestamp + "'")
         .add("data=" + data)
@@ -83,7 +83,7 @@ public class FeedItem {
     return Objects.equals(id, feedItem.id)
         && Objects.equals(next, feedItem.next)
         && Objects.equals(type, feedItem.type)
-        && Objects.equals(uri, feedItem.uri)
+        && Objects.equals(resource, feedItem.resource)
         && Objects.equals(method, feedItem.method)
         && Objects.equals(timestamp, feedItem.timestamp)
         && Objects.equals(data, feedItem.data);
@@ -91,6 +91,6 @@ public class FeedItem {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, next, type, uri, method, timestamp, data);
+    return Objects.hash(id, next, type, resource, method, timestamp, data);
   }
 }

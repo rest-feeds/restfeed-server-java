@@ -8,7 +8,7 @@ public interface FeedItemRepository {
       String feed,
       String id,
       String type,
-      String uri,
+      String resource,
       String method,
       String timestamp,
       Object data);

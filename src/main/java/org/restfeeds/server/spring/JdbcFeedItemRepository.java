@@ -4,7 +4,6 @@ import java.util.List;
 import org.restfeeds.server.FeedItem;
 import org.restfeeds.server.FeedItemRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 public class JdbcFeedItemRepository implements FeedItemRepository {
 
@@ -21,7 +20,7 @@ public class JdbcFeedItemRepository implements FeedItemRepository {
       String feed,
       String id,
       String type,
-      String uri,
+      String resource,
       String method,
       String timestamp,
       Object data) {
@@ -29,8 +28,8 @@ public class JdbcFeedItemRepository implements FeedItemRepository {
     String dataAsString = DataSerializer.toString(data);
 
     String sql =
-        "insert into feed (feed, id, type, uri, method, timestamp, data) values (?, ?, ?, ?, ?, ?, ?)";
-    jdbcTemplate.update(sql, feed, id, type, uri, method, timestamp, dataAsString);
+        "insert into feed (feed, id, type, resource, method, timestamp, data) values (?, ?, ?, ?, ?, ?, ?)";
+    jdbcTemplate.update(sql, feed, id, type, resource, method, timestamp, dataAsString);
   }
 
   @Override
