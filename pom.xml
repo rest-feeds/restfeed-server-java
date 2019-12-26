@@ -13,7 +13,7 @@
 
   <groupId>org.restfeeds</groupId>
   <artifactId>restfeed-server</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 
   <name>restfeed-server</name>
   <description>REST Feed Server</description>
