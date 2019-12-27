@@ -1,5 +1,7 @@
 # restfeed-server-java
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.restfeeds/restfeed-server/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.restfeeds/restfeed-server)
+
 Library to provide a [REST Feed](http://rest-feeds.org/) server endpoint in Java.
 
 An included Spring Boot Auto Configuration simplifies the implementation as a Spring application.
