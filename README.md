@@ -28,8 +28,8 @@ Then add this library to your `pom.xml`:
 ```
 
 The [`RestFeedServerAutoConfiguration`](src/main/java/org/restfeeds/server/spring/RestFeedServerAutoConfiguration.java) adds all relevant beans.
-You only need to add a `@RestController` that calls the `RestFeedEndpoint#fetch` method, 
-or use the generic `RestFeedEndpointController` by registering it as a bean.
+You only need to add a custom `@RestController` that calls the [`RestFeedEndpoint#fetch`](src/main/java/org/restfeeds/server/RestFeedEndpoint.java) method, 
+or use the generic [`RestFeedEndpointController`](src/main/java/org/restfeeds/server/spring/RestFeedEndpointController.java) by registering it as a bean.
 
 ```java
 @SpringBootApplication
