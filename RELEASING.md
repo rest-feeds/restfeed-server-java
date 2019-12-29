@@ -45,3 +45,5 @@ git add pom.xml
 git commit -m "bump version"
 git push
 ```
+
+It takes around ~10 minutes, until the artifact is synced to maven central.
