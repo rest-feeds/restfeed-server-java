@@ -6,7 +6,7 @@
 
   <groupId>org.restfeeds</groupId>
   <artifactId>restfeed-server</artifactId>
-  <version>0.0.2</version>
+  <version>git add pom.xml</version>
 
   <name>restfeed-server</name>
   <description>REST Feed Server</description>
