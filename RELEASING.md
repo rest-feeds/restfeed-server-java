@@ -1,11 +1,12 @@
 # Release
 
-mvn clean deploy -P release
+mvn clean deploy
 
-mvn versions:set -DnewVersion=0.0.1
-mvn clean deploy -P release
+mvn versions:set -DnewVersion=0.0.2 -DgenerateBackupPoms=false
 replace version in README.md
+mvn clean deploy
 
-git tag 0.0.1
+git tag 0.0.2
 
-mvn versions:set -DnewVersion=0.0.2-SNAPSHOT
+
+mvn versions:set -DnewVersion=0.0.3-SNAPSHOT -DgenerateBackupPoms=false
