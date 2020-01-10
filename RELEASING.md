@@ -30,11 +30,11 @@ Have a ~/.mw2/settings.xml
 
 ```
 # Do a snapshot deployment
-mvn clean deploy -P release
+mvn clean deploy
 
 # Do a release deployment
 mvn versions:set -DremoveSnapshot=true -DgenerateBackupPoms=false
-mvn clean deploy -P release
+mvn clean deploy
 replace version in README.md
 
 git commit -am "Update"
