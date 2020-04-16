@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -24,30 +25,29 @@ class RestFeedEndpointTests {
 
   @Test
   void shouldCallRepositoryOnceWhenItemsAreReturned() {
-    FeedItemRepository mockedRepository = Mockito.mock(FeedItemRepository.class);
-    RestFeedEndpoint restFeedEndpoint = new RestFeedEndpoint(mockedRepository);
+    FeedItemRepository<FeedItem> mockedRepository = Mockito.mock(FeedItemRepository.class);
+    FeedItemMapper<FeedItem> mockedMapper = Mockito.mock(FeedItemMapper.class);
+    RestFeedEndpoint<FeedItem> restFeedEndpoint = new RestFeedEndpoint<>(mockedRepository,
+        mockedMapper);
     when(mockedRepository.findByFeedPositionGreaterThanEqual(any(), anyLong(), anyInt()))
         .thenReturn(
-            Collections.singletonList(
-                new FeedItem(
-                    "c82aa148-99d6-4fdd-b50b-138f4ec9790d",
-                    "/movies?offset=126",
-                    "application/vnd.org.themoviedb.movie",
-                    "/movies/18",
-                    null,
-                    "2019-12-16T08:41:519Z",
-                    aMovie())));
+            Collections.singletonList(aFeedItem()));
+
+    when(mockedMapper.mapToFeedItem(any())).thenReturn(aFeedItem());
 
     List<FeedItem> items = restFeedEndpoint.fetch("movies", 0L, 1000);
 
     assertEquals(1, items.size());
     verify(mockedRepository).findByFeedPositionGreaterThanEqual("movies", 0L, 1000);
+    verify(mockedMapper).mapToFeedItem(aFeedItem());
   }
 
   @Test
   void shouldPollUntilRepositoryReturnsItems() {
-    FeedItemRepository mockedRepository = Mockito.mock(FeedItemRepository.class);
-    RestFeedEndpoint restFeedEndpoint = new RestFeedEndpoint(mockedRepository);
+    FeedItemRepository<FeedItem> mockedRepository = Mockito.mock(FeedItemRepository.class);
+    FeedItemMapper<FeedItem> mockedMapper = Mockito.mock(FeedItemMapper.class);
+    RestFeedEndpoint<FeedItem> restFeedEndpoint = new RestFeedEndpoint<>(mockedRepository,
+        mockedMapper);
     when(mockedRepository.findByFeedPositionGreaterThanEqual(any(), anyLong(), anyInt()))
         .thenReturn(new ArrayList<>())
         .thenReturn(new ArrayList<>())
@@ -62,29 +62,47 @@ class RestFeedEndpointTests {
                     "2019-12-16T08:41:519Z",
                     aMovie())));
 
+    when(mockedMapper.mapToFeedItem(any())).thenReturn(aFeedItem());
+
     List<FeedItem> items = restFeedEndpoint.fetch("movies", 0L, 1000);
 
     assertEquals(1, items.size());
     verify(mockedRepository, times(3)).findByFeedPositionGreaterThanEqual("movies", 0L, 1000);
+    verify(mockedMapper).mapToFeedItem(aFeedItem());
   }
 
   @Test
   void shouldPollUntilTimeout() {
     Duration pollInterval = Duration.of(50L, MILLIS);
     Duration timeout = Duration.of(1, SECONDS);
-    FeedItemRepository mockedRepository = Mockito.mock(FeedItemRepository.class);
-    RestFeedEndpoint restFeedEndpoint =
-        new RestFeedEndpoint(mockedRepository, pollInterval, timeout);
+    FeedItemRepository<FeedItem> mockedRepository = Mockito.mock(FeedItemRepository.class);
+    FeedItemMapper<FeedItem> mockedMapper = Mockito.mock(FeedItemMapper.class);
+    RestFeedEndpoint<FeedItem> restFeedEndpoint =
+        new RestFeedEndpoint<>(mockedRepository, mockedMapper, pollInterval, timeout);
     when(mockedRepository.findByFeedPositionGreaterThanEqual(any(), anyLong(), anyInt()))
         .thenReturn(new ArrayList<>());
+
+    when(mockedMapper.mapToFeedItem(any())).thenReturn(aFeedItem());
 
     List<FeedItem> items = restFeedEndpoint.fetch("movies", 0L, 1000);
 
     assertTrue(items.isEmpty());
     verify(mockedRepository, atLeast(19)).findByFeedPositionGreaterThanEqual("movies", 0L, 1000);
+    verify(mockedMapper, times(0)).mapToFeedItem(aFeedItem());
   }
 
-  Movie aMovie() {
+  private FeedItem aFeedItem() {
+    return new FeedItem(
+        "c82aa148-99d6-4fdd-b50b-138f4ec9790d",
+        "/movies?offset=126",
+        "application/vnd.org.themoviedb.movie",
+        "/movies/18",
+        null,
+        "2019-12-16T08:41:519Z",
+        aMovie());
+  }
+
+  private Movie aMovie() {
     Movie movie = new Movie();
     movie.setId(3924L);
     movie.setOriginal_title("Blondie");
@@ -120,6 +138,25 @@ class RestFeedEndpointTests {
 
     public void setPopularity(BigDecimal popularity) {
       this.popularity = popularity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+      Movie movie = (Movie) o;
+      return Objects.equals(id, movie.id)
+          && Objects.equals(original_title, movie.original_title)
+          && Objects.equals(popularity, movie.popularity);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(id, original_title, popularity);
     }
   }
 }

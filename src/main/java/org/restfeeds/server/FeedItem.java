@@ -3,16 +3,30 @@ package org.restfeeds.server;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * Java bean representing the <a href="https://github.com/rest-feeds/rest-feeds/#model">data
+ * model</a> of the returned feed items.
+ */
 public class FeedItem {
 
-  private final String id;
-  private final String next;
-  private final String type;
-  private final String resource;
-  private final String method;
-  private final String timestamp;
-  private final Object data;
+  private String id;
+  private String next;
+  private String type;
+  private String resource;
+  private String method;
+  private String timestamp;
+  private Object data;
 
+  /**
+   * Constructor for {@link FeedItem}.
+   */
+  public FeedItem() {
+
+  }
+
+  /**
+   * Constructor for {@link FeedItem}.
+   */
   public FeedItem(
       String id,
       String next,
