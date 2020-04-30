@@ -24,8 +24,9 @@ class RestFeedEndpointTests {
 
   @Test
   void shouldCallRepositoryOnceWhenItemsAreReturned() {
-    FeedItemRepository mockedRepository = Mockito.mock(FeedItemRepository.class);
-    RestFeedEndpoint restFeedEndpoint = new RestFeedEndpoint(mockedRepository);
+    @SuppressWarnings("unchecked")
+    FeedItemRepository<FeedItem> mockedRepository = Mockito.mock(FeedItemRepository.class);
+    RestFeedEndpoint<FeedItem> restFeedEndpoint = new RestFeedEndpoint<>(mockedRepository);
     when(mockedRepository.findByFeedPositionGreaterThanEqual(any(), anyLong(), anyInt()))
         .thenReturn(
             Collections.singletonList(
@@ -46,8 +47,9 @@ class RestFeedEndpointTests {
 
   @Test
   void shouldPollUntilRepositoryReturnsItems() {
-    FeedItemRepository mockedRepository = Mockito.mock(FeedItemRepository.class);
-    RestFeedEndpoint restFeedEndpoint = new RestFeedEndpoint(mockedRepository);
+    @SuppressWarnings("unchecked")
+    FeedItemRepository<FeedItem> mockedRepository = Mockito.mock(FeedItemRepository.class);
+    RestFeedEndpoint<FeedItem> restFeedEndpoint = new RestFeedEndpoint<>(mockedRepository);
     when(mockedRepository.findByFeedPositionGreaterThanEqual(any(), anyLong(), anyInt()))
         .thenReturn(new ArrayList<>())
         .thenReturn(new ArrayList<>())
@@ -72,9 +74,10 @@ class RestFeedEndpointTests {
   void shouldPollUntilTimeout() {
     Duration pollInterval = Duration.of(50L, MILLIS);
     Duration timeout = Duration.of(1, SECONDS);
-    FeedItemRepository mockedRepository = Mockito.mock(FeedItemRepository.class);
-    RestFeedEndpoint restFeedEndpoint =
-        new RestFeedEndpoint(mockedRepository, pollInterval, timeout);
+    @SuppressWarnings("unchecked")
+    FeedItemRepository<FeedItem> mockedRepository = Mockito.mock(FeedItemRepository.class);
+    RestFeedEndpoint<FeedItem> restFeedEndpoint =
+        new RestFeedEndpoint<>(mockedRepository, pollInterval, timeout);
     when(mockedRepository.findByFeedPositionGreaterThanEqual(any(), anyLong(), anyInt()))
         .thenReturn(new ArrayList<>());
 

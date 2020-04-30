@@ -9,30 +9,34 @@ import java.time.Instant;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class RestFeedEndpoint {
+/**
+ * Core class that handles long polling.
+ * @param <T> the type of your objects to be queried.
+ */
+public class RestFeedEndpoint<T extends FeedItem> {
 
   private static final Logger log = Logger.getLogger(RestFeedEndpoint.class.getName());
 
-  private final FeedItemRepository feedItemRepository;
+  private final FeedItemRepository<T> feedItemRepository;
   private final Duration pollInterval;
   private final Duration timeout;
 
-  public RestFeedEndpoint(FeedItemRepository feedItemRepository) {
+  public RestFeedEndpoint(FeedItemRepository<T> feedItemRepository) {
     this(feedItemRepository, Duration.of(50L, MILLIS), Duration.of(5, SECONDS));
   }
 
   public RestFeedEndpoint(
-      FeedItemRepository feedItemRepository, Duration pollInterval, Duration timeout) {
+      FeedItemRepository<T> feedItemRepository, Duration pollInterval, Duration timeout) {
     this.feedItemRepository = feedItemRepository;
     this.pollInterval = pollInterval;
     this.timeout = timeout;
   }
 
-  public List<FeedItem> fetch(String feed, long offset, int limit) {
+  public List<T> fetch(String feed, long offset, int limit) {
     Instant timeoutTimestamp = Instant.now().plus(timeout);
     log.fine(
         () -> format("Poll for items in feed %s with offset=%s timeout=%s", feed, offset, timeout));
-    List<FeedItem> items;
+    List<T> items;
     while (true) {
       items = feedItemRepository.findByFeedPositionGreaterThanEqual(feed, offset, limit);
 

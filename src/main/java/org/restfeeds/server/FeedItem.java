@@ -3,6 +3,10 @@ package org.restfeeds.server;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * Java bean representing the <a href="https://github.com/rest-feeds/rest-feeds/#model">data
+ * model</a> of the returned feed items.
+ */
 public class FeedItem {
 
   private final String id;
