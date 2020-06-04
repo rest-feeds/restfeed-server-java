@@ -3,7 +3,7 @@ package org.restfeeds.server;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public class FeedItem {
+public class FeedItem<T> {
 
   private final String id;
   private final String next;
@@ -11,7 +11,7 @@ public class FeedItem {
   private final String resource;
   private final String method;
   private final String timestamp;
-  private final Object data;
+  private final T data;
 
   public FeedItem(
       String id,
@@ -20,7 +20,7 @@ public class FeedItem {
       String resource,
       String method,
       String timestamp,
-      Object data) {
+      T data) {
     this.id = id;
     this.next = next;
     this.type = type;

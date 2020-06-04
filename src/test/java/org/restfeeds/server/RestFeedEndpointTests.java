@@ -24,12 +24,13 @@ class RestFeedEndpointTests {
 
   @Test
   void shouldCallRepositoryOnceWhenItemsAreReturned() {
-    FeedItemRepository mockedRepository = Mockito.mock(FeedItemRepository.class);
-    RestFeedEndpoint restFeedEndpoint = new RestFeedEndpoint(mockedRepository);
+    //noinspection unchecked
+    FeedItemRepository<Movie> mockedRepository = Mockito.mock(FeedItemRepository.class);
+    RestFeedEndpoint<Movie> restFeedEndpoint = new RestFeedEndpoint<>(mockedRepository);
     when(mockedRepository.findByFeedPositionGreaterThanEqual(any(), anyLong(), anyInt()))
         .thenReturn(
             Collections.singletonList(
-                new FeedItem(
+                new FeedItem<>(
                     "c82aa148-99d6-4fdd-b50b-138f4ec9790d",
                     "/movies?offset=126",
                     "application/vnd.org.themoviedb.movie",
@@ -38,7 +39,7 @@ class RestFeedEndpointTests {
                     "2019-12-16T08:41:519Z",
                     aMovie())));
 
-    List<FeedItem> items = restFeedEndpoint.fetch("movies", 0L, 1000);
+    List<FeedItem<Movie>> items = restFeedEndpoint.fetch("movies", 0L, 1000);
 
     assertEquals(1, items.size());
     verify(mockedRepository).findByFeedPositionGreaterThanEqual("movies", 0L, 1000);
@@ -46,14 +47,15 @@ class RestFeedEndpointTests {
 
   @Test
   void shouldPollUntilRepositoryReturnsItems() {
-    FeedItemRepository mockedRepository = Mockito.mock(FeedItemRepository.class);
-    RestFeedEndpoint restFeedEndpoint = new RestFeedEndpoint(mockedRepository);
+    //noinspection unchecked
+    FeedItemRepository<Movie> mockedRepository = Mockito.mock(FeedItemRepository.class);
+    RestFeedEndpoint<Movie> restFeedEndpoint = new RestFeedEndpoint<>(mockedRepository);
     when(mockedRepository.findByFeedPositionGreaterThanEqual(any(), anyLong(), anyInt()))
         .thenReturn(new ArrayList<>())
         .thenReturn(new ArrayList<>())
         .thenReturn(
             Collections.singletonList(
-                new FeedItem(
+                new FeedItem<>(
                     "c82aa148-99d6-4fdd-b50b-138f4ec9790d",
                     "/movies?offset=126",
                     "application/vnd.org.themoviedb.movie",
@@ -62,7 +64,7 @@ class RestFeedEndpointTests {
                     "2019-12-16T08:41:519Z",
                     aMovie())));
 
-    List<FeedItem> items = restFeedEndpoint.fetch("movies", 0L, 1000);
+    List<FeedItem<Movie>> items = restFeedEndpoint.fetch("movies", 0L, 1000);
 
     assertEquals(1, items.size());
     verify(mockedRepository, times(3)).findByFeedPositionGreaterThanEqual("movies", 0L, 1000);
@@ -72,13 +74,14 @@ class RestFeedEndpointTests {
   void shouldPollUntilTimeout() {
     Duration pollInterval = Duration.of(50L, MILLIS);
     Duration timeout = Duration.of(1, SECONDS);
-    FeedItemRepository mockedRepository = Mockito.mock(FeedItemRepository.class);
-    RestFeedEndpoint restFeedEndpoint =
-        new RestFeedEndpoint(mockedRepository, pollInterval, timeout);
+    //noinspection unchecked
+    FeedItemRepository<Movie> mockedRepository = Mockito.mock(FeedItemRepository.class);
+    RestFeedEndpoint<Movie> restFeedEndpoint =
+        new RestFeedEndpoint<>(mockedRepository, pollInterval, timeout);
     when(mockedRepository.findByFeedPositionGreaterThanEqual(any(), anyLong(), anyInt()))
         .thenReturn(new ArrayList<>());
 
-    List<FeedItem> items = restFeedEndpoint.fetch("movies", 0L, 1000);
+    List<FeedItem<Movie>> items = restFeedEndpoint.fetch("movies", 0L, 1000);
 
     assertTrue(items.isEmpty());
     verify(mockedRepository, atLeast(19)).findByFeedPositionGreaterThanEqual("movies", 0L, 1000);
