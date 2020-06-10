@@ -2,7 +2,7 @@ package org.restfeeds.server;
 
 import java.util.List;
 
-public interface FeedItemRepository {
+public interface FeedItemRepository<T> {
 
   void append(
       String feed,
@@ -11,7 +11,7 @@ public interface FeedItemRepository {
       String resource,
       String method,
       String timestamp,
-      Object data);
+      T data);
 
-  List<FeedItem> findByFeedPositionGreaterThanEqual(String feed, long position, int limit);
+  List<FeedItem<T>> findByFeedPositionGreaterThanEqual(String feed, long position, int limit);
 }
